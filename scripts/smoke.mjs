@@ -1,0 +1,21 @@
+import { generateSample, SAMPLE_MAPPING, toCSV } from "../shared/sample.js";
+import { normalizeRows } from "../shared/ingest.js";
+import { runPipeline } from "../shared/pipeline.js";
+let t0 = performance.now();
+const { rows, truth, meta } = generateSample();
+console.log("generated", rows.length, "rows in", Math.round(performance.now() - t0), "ms");
+console.log("csv MB", (toCSV(rows).length / 1e6).toFixed(2));
+t0 = performance.now();
+const tx = normalizeRows(rows, SAMPLE_MAPPING);
+const run = runPipeline(tx, {});
+console.log("pipeline ms", Math.round(performance.now() - t0));
+console.log(run.stages.map(s => `${s.key}:${s.ms}ms`).join(" "));
+console.log(JSON.stringify(run.stages[1].stats));
+console.table(run.model.candidates);
+console.log(run.summary);
+console.table(run.segments.map(s => ({ name: s.name, size: s.size, share: s.share, rev: s.revenueShare, R: s.avg.recency, F: s.avg.frequency, M: s.avg.monetary, sc: `${s.scores.r}/${s.scores.f}/${s.scores.m}` })));
+// crosstab vs truth
+const ct = {};
+run.customers.id.forEach((id, i) => { const k = truth.get(id) + " -> " + run.segments[run.customers.seg[i]].name; ct[k] = (ct[k] || 0) + 1; });
+console.log(Object.entries(ct).sort((a, b) => b[1] - a[1]).slice(0, 20));
+console.log("json MB", (JSON.stringify(run).length / 1e6).toFixed(2));

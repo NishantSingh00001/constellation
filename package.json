@@ -1,0 +1,29 @@
+{
+  "name": "constellation",
+  "version": "1.0.0",
+  "description": "Customer segmentation pipeline: RFM + K-Means with a 3D customer map and an AI marketing playbook.",
+  "scripts": {
+    "test": "node scripts/smoke.mjs",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "parity": "node scripts/parity-export.mjs && cd python && python3 parity.py",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "author": "Nishant Singh",
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.1",
+    "framer-motion": "^11.18.2",
+    "papaparse": "^5.7.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.6",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^5.4.21"
+  },
+  "type": "module"
+}
